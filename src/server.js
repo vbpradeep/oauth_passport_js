@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const cookieSession = require('cookie-session'); // controls the session and sends the cookie to the browser in a encrypted manner. Reason for encrypting the cookie is everyone can see the cookie in the browser so we are encrypting with the keys.
 const path = require('path');
-require('./passport-setup');
+const auth = require('./oauth/passport-setup');
 
 const app = express();
 const port = 3000;
@@ -14,6 +14,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
+
 
 // To initialize passport in our application
 app.use(passport.initialize());
@@ -26,7 +27,7 @@ app.use(cookieSession({
     keys: ['key1', 'key2']
 }));
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     console.log("I am in  middleware");
 
     if (req.originalUrl && (req.originalUrl.includes('/login') || req.originalUrl.includes('/login/callback'))) {
@@ -39,10 +40,14 @@ app.use(function(req, res, next) {
     } else {
         res.redirect('/login');
     }
- });
+});
 
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname + '/index.html'));
+    if (req.session.passport && req.session.passport.user) {
+        res.redirect('/');
+    } else {
+        res.sendFile(path.join(__dirname + '/templates/login.html'));
+    }
 })
 
 app.get('/', (req, res) => {
@@ -63,25 +68,25 @@ app.get('/signedin/:user', (req, res) => {
 
 // Whenever this route is called, passport communicates with google with the google strategy and client id and secret key
 app.get('/login/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
+    passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 // Reason for using passport.authenticate again - Once the user has been authenticated with the consent screen, it will get query param with the redirect uri (ex. http://localhost:3000?code=1234) and on the fly passport exchanges the code with google and get the profile information.
 app.get('/login/callback/google',
-  passport.authenticate('google', { failureRedirect: '/failed' }),
-  function(req, res) {
-    // Successful authentication, redirect signed page.
-    res.redirect('/signedin/' + req.user.displayName);
-});
+    passport.authenticate('google', { failureRedirect: '/failed' }),
+    function (req, res) {
+        // Successful authentication, redirect signed page.
+        res.redirect('/signedin/' + req.user.displayName);
+    });
 
 app.get('/login/facebook',
-  passport.authenticate('facebook'));
+    passport.authenticate('facebook'));
 
 app.get('/login/callback/facebook',
-  passport.authenticate('facebook', { failureRedirect: '/failed' }),
-  function(req, res) {
-    // Successful authentication, redirect signed page.
-    res.redirect('/signedin/' + req.user.displayName);
-});
+    passport.authenticate('facebook', { failureRedirect: '/failed' }),
+    function (req, res) {
+        // Successful authentication, redirect signed page.
+        res.redirect('/signedin/' + req.user.displayName);
+    });
 
 app.get('/logout', (req, res) => {
     req.session = null;
@@ -90,5 +95,5 @@ app.get('/logout', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Example app listening at http://localhost:${port}`)
 })

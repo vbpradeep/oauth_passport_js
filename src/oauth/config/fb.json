@@ -1,0 +1,8 @@
+{
+  "web": {
+    "client_id": "631039221140152",
+    "client_secret": "f580103cc9f9bd476edbdc91df00d62c",
+    "redirect_uris": ["http://localhost:3000/login/callback/facebook"],
+    "profileFields": ["id", "displayName", "email"]
+  }
+}
