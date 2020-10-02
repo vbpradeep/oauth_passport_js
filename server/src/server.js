@@ -12,8 +12,8 @@ const port = 3000;
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use(bodyParser.json());
+
 
 
 // To initialize passport in our application
@@ -50,16 +50,20 @@ app.get('/login', (req, res) => {
     }
 })
 
-app.get('/', (req, res) => {
-    if (req.session.passport && req.session.passport.user) {
-        res.send('You are logged in');
-    } else {
-        res.send('Not logged in');
-    }
-})
+// app.get('/', (req, res) => {
+//     if (req.session.passport && req.session.passport.user) {
+//         res.send('You are logged in');
+//     } else {
+//         res.send('Not logged in');
+//     }
+// })
 
 app.get('/failed', (req, res) => {
     res.send('Authentication Failed');
+})
+
+app.get('/api/call', (req, res) => {
+    res.send('API called');
 })
 
 app.get('/signedin/:user', (req, res) => {
@@ -75,7 +79,7 @@ app.get('/login/callback/google',
     passport.authenticate('google', { failureRedirect: '/failed' }),
     function (req, res) {
         // Successful authentication, redirect signed page.
-        res.redirect('/signedin/' + req.user.displayName);
+        res.sendFile(path.join(__dirname + '../../../build/index.html'));
     });
 
 app.get('/login/facebook',
@@ -85,13 +89,21 @@ app.get('/login/callback/facebook',
     passport.authenticate('facebook', { failureRedirect: '/failed' }),
     function (req, res) {
         // Successful authentication, redirect signed page.
-        res.redirect('/signedin/' + req.user.displayName);
+        res.sendFile(path.join(__dirname + '../../../build/index.html'));
     });
 
 app.get('/logout', (req, res) => {
     req.session = null;
     req.logout();
     res.redirect('/');
+})
+
+app.get('*', (req, res) => {
+    if (req.session.passport) {
+        res.sendFile(path.join(__dirname + '../../../build/index.html'));
+    } else {
+        res.redirect('/login');
+    }
 })
 
 app.listen(port, () => {
