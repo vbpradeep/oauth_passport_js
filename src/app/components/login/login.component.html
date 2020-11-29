@@ -1,0 +1,33 @@
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <h2>Log In</h2>
+      <span class="flex-horizontal">
+        <span class="width-70">
+          <h2>Form</h2>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <mat-error *ngIf="false"> The username and password were not recognised </mat-error>
+            <mat-form-field class="full-width-input">
+              <input matInput placeholder="Email" formControlName="username" required />
+              <mat-error> Please provide a valid email address </mat-error>
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+              <input matInput type="password" placeholder="Password" formControlName="password" required />
+              <mat-error> Please provide a valid password </mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary">Login</button>
+          </form>
+        </span>
+        <span>
+          <mat-card-content>
+            <span class="flex-vertical">
+              <button mat-button color="primary"><mat-icon>facebook</mat-icon>Facebook</button>
+              <button mat-button color="primary"><mat-icon>google</mat-icon>Google</button>
+              <button mat-button color="primary"><mat-icon>github</mat-icon>Github</button>
+            </span>
+          </mat-card-content>
+        </span>
+      </span>
+    </mat-card-content>
+  </mat-card>
+</div>

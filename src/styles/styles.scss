@@ -1,0 +1,35 @@
+.flex {
+  display: flex;
+}
+
+.flex-horizontal {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-vertical-center .flex-center {
+  align-self: center;
+}
+
+.align-right {
+  float: right;
+  margin-left: auto;
+}
+
+.width-70 {
+  width: 70%;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.border {
+  border: 1px solid gray;
+}

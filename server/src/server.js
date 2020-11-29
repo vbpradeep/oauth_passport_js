@@ -11,6 +11,8 @@ const port = 3000;
 
 app.use(cors());
 
+app.use(express.static('../../../dist'))
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -79,7 +81,7 @@ app.get('/login/callback/google',
     passport.authenticate('google', { failureRedirect: '/failed' }),
     function (req, res) {
         // Successful authentication, redirect signed page.
-        res.sendFile(path.join(__dirname + '../../../build/index.html'));
+        res.sendFile(path.join(__dirname + '../../../dist/index.html'));
     });
 
 app.get('/login/facebook',
@@ -89,7 +91,7 @@ app.get('/login/callback/facebook',
     passport.authenticate('facebook', { failureRedirect: '/failed' }),
     function (req, res) {
         // Successful authentication, redirect signed page.
-        res.sendFile(path.join(__dirname + '../../../build/index.html'));
+        res.sendFile(path.join(__dirname + '../../../dist/index.html'));
     });
 
 app.get('/logout', (req, res) => {
@@ -100,7 +102,7 @@ app.get('/logout', (req, res) => {
 
 app.get('*', (req, res) => {
     if (req.session.passport) {
-        res.sendFile(path.join(__dirname + '../../../build/index.html'));
+        res.sendFile(path.join(__dirname + '../../../dist/index.html'));
     } else {
         res.redirect('/login');
     }
